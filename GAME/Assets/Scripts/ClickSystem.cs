@@ -9,15 +9,20 @@ namespace Assets.Scripts
 
     public class ClickSystem : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI displayText; // Text component to display playerMoney
+        [SerializeField] private TextMeshProUGUI displayText;
+        [SerializeField] private TextMeshProUGUI smallMultiplierText;
+        [SerializeField] private TextMeshProUGUI multiclickText;
+        [SerializeField] private TextMeshProUGUI largeIncreaseText;
         [SerializeField] private Canvas MainCanvas;
         [SerializeField] private Canvas BuildCanvas;
-    
+        [SerializeField] private Canvas ResearchCanvas;
+
         public int playerMoney = 0; // Money the player has
         private int activeCanvas = 1;
 
         [SerializeField] public BuildSystem _buildSystem;
-    
+        [SerializeField] public ResearchSystem _researchSystem;
+
         private void Awake()
         {
             UpdateDisplay();
@@ -28,7 +33,7 @@ namespace Assets.Scripts
         /// </summary>
         public void IncreaseMoney()
         {
-            playerMoney++;
+            playerMoney += 1 * _researchSystem.multiclickEffect;
             UpdateDisplay();
         }
 
@@ -62,8 +67,27 @@ namespace Assets.Scripts
         private void UpdateDisplay()
         {
             displayText.text = "Money: " + playerMoney.ToString();
+
         }
-    
+
+        public void UpdateEffectDisplay()
+        {
+            if (_researchSystem.hasSmallMultiplier == true)
+            {
+                smallMultiplierText.text = "Small Factories 2X!";
+            }
+
+            if (_researchSystem.hasMulticlickEffect == true)
+            {
+                multiclickText.text = "2X Pets!";
+            }
+
+            if (_researchSystem.hasLargeIncreaseEffect == true)
+            {
+                largeIncreaseText.text = "Large Factories more Effective!";
+            }
+        }
+
         private void OnEnable()
         {
             InvokeRepeating(nameof(AddFactoryMoney), 10f, 10f);
@@ -75,7 +99,8 @@ namespace Assets.Scripts
         }
     
     
-        public void ChangeCanvas()
+        // UPDATE TO A BETTER SOLUTION
+        public void ChangeCanvasFactory()
         {
             switch (activeCanvas)
             {
@@ -93,7 +118,27 @@ namespace Assets.Scripts
                     break;
             }
         }
-    
+
+        // UPDATE TO A BETTER SOLUTION
+        public void ChangeCanvasResearch()
+        {
+            switch (activeCanvas)
+            {
+                case 1:
+                    MainCanvas.gameObject.SetActive(false);
+                    ResearchCanvas.gameObject.SetActive(true);
+                    activeCanvas = 2;
+                    UpdateDisplay();
+                    break;
+                case 2:
+                    MainCanvas.gameObject.SetActive(true);
+                    ResearchCanvas.gameObject.SetActive(false);
+                    activeCanvas = 1;
+                    UpdateDisplay();
+                    break;
+            }
+        }
+
     }
 
 }

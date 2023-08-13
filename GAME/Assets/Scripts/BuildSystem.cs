@@ -11,12 +11,11 @@ using TMPro;
 namespace Assets.Scripts
 {
 
-
     public class BuildSystem : MonoBehaviour
     {
-        [SerializeField] private int factorySmallCost = 10;
-        [SerializeField] private int factoryMediumCost = 20;
-        [SerializeField] private int factoryLargeCost = 30;
+        [SerializeField] public int factorySmallCost = 10;
+        [SerializeField] public int factoryMediumCost = 20;
+        [SerializeField] public int factoryLargeCost = 30;
 
         [SerializeField] public int factorySmallRate = 1;
         [SerializeField] public int factoryMediumRate = 2;
@@ -30,9 +29,13 @@ namespace Assets.Scripts
         public bool hasMediumFactory = false;
         public bool hasLargeFactory = false;
 
+        [SerializeField] private TextMeshProUGUI smallText;
+        [SerializeField] private TextMeshProUGUI mediumText;
+        [SerializeField] private TextMeshProUGUI largeText;
+
         [SerializeField] public ClickSystem _clickSystem;
-        public BuildMenu buildMenu;
-        public GameObject buildUI;
+        // public BuildMenu buildMenu;
+        // public GameObject buildUI;
         
 
         public void BuyFactorySmall()
@@ -42,6 +45,7 @@ namespace Assets.Scripts
                 _clickSystem.playerMoney -= factorySmallCost;
                 factorySmallCount++;
                 hasSmallFactory = true;
+                UpdateFactoryDisplays();
             }
         }
 
@@ -52,6 +56,7 @@ namespace Assets.Scripts
                 _clickSystem.playerMoney -= factoryMediumCost;
                 factoryMediumCount++;
                 hasMediumFactory = true;
+                UpdateFactoryDisplays();
             }
         }
 
@@ -62,17 +67,24 @@ namespace Assets.Scripts
                 _clickSystem.playerMoney -= factoryLargeCost;
                 factoryLargeCount++;
                 hasLargeFactory = true;
+                UpdateFactoryDisplays();
             }
         }
 
-
-        public void OpenBuildMenu()
+        private void UpdateFactoryDisplays()
         {
-            Button _pressedButton = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
-            int _pressedButtonInteger = buildMenu.GetBuildAreaGridIndex(_pressedButton);
-            Debug.Log("Button index is: " + _pressedButtonInteger);
-            buildUI.gameObject.SetActive(true);
+            smallText.text = "Owned: " + factorySmallCount;
+            mediumText.text = "Owned: " + factoryMediumCount;
+            largeText.text = "Owned: " + factoryLargeCount;
         }
+
+        // public void OpenBuildMenu()
+        // {
+        //     Button _pressedButton = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
+        //     int _pressedButtonInteger = buildMenu.GetBuildAreaGridIndex(_pressedButton);
+        //     Debug.Log("Button index is: " + _pressedButtonInteger);
+        //     buildUI.gameObject.SetActive(true);
+        // }
     }
 
 }
