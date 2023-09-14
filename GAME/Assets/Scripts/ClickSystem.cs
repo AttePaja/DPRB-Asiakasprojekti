@@ -13,15 +13,18 @@ namespace Assets.Scripts
         [SerializeField] private TextMeshProUGUI smallMultiplierText;
         [SerializeField] private TextMeshProUGUI multiclickText;
         [SerializeField] private TextMeshProUGUI largeIncreaseText;
+        [SerializeField] private TextMeshProUGUI milestoneText;
         [SerializeField] private Canvas MainCanvas;
         [SerializeField] private Canvas BuildCanvas;
         [SerializeField] private Canvas ResearchCanvas;
+        [SerializeField] private Canvas MilestoneCanvas;
 
         public int playerMoney = 0; // Money the player has
         private int activeCanvas = 1;
 
         [SerializeField] public BuildSystem _buildSystem;
         [SerializeField] public ResearchSystem _researchSystem;
+        [SerializeField] public MilestoneSystem _milestoneSystem;
 
         private void Awake()
         {
@@ -34,12 +37,15 @@ namespace Assets.Scripts
         public void IncreaseMoney()
         {
             playerMoney += 1 * _researchSystem.multiclickEffect;
+            _milestoneSystem.AddClick(1 * _researchSystem.multiclickEffect);
             UpdateDisplay();
         }
 
 
         public void AddFactoryMoney()
         {
+            int _pmoney = playerMoney;
+
             if (_buildSystem.hasSmallFactory)
             {
                 playerMoney += _buildSystem.factorySmallCount * _buildSystem.factorySmallRate;
@@ -57,7 +63,8 @@ namespace Assets.Scripts
                 playerMoney += _buildSystem.factoryLargeCount * _buildSystem.factoryLargeRate;
                 Debug.Log("Large factories make stuff, the player has: " + _buildSystem.factoryLargeCount + " factories!");
             }
-            
+
+            _milestoneSystem.AddClick(playerMoney - _pmoney);
             UpdateDisplay();
         }
     
@@ -67,7 +74,7 @@ namespace Assets.Scripts
         private void UpdateDisplay()
         {
             displayText.text = "Money: " + playerMoney.ToString();
-
+            milestoneText.text = "Amount: " + _milestoneSystem.clickAmount;
         }
 
         public void UpdateEffectDisplay()
@@ -133,6 +140,26 @@ namespace Assets.Scripts
                 case 2:
                     MainCanvas.gameObject.SetActive(true);
                     ResearchCanvas.gameObject.SetActive(false);
+                    activeCanvas = 1;
+                    UpdateDisplay();
+                    break;
+            }
+        }
+
+
+        public void ChangeCanvasMilestone()
+        {
+            switch (activeCanvas)
+            {
+                case 1:
+                    MainCanvas.gameObject.SetActive(false);
+                    MilestoneCanvas.gameObject.SetActive(true);
+                    activeCanvas = 2;
+                    UpdateDisplay();
+                    break;
+                case 2:
+                    MainCanvas.gameObject.SetActive(true);
+                    MilestoneCanvas.gameObject.SetActive(false);
                     activeCanvas = 1;
                     UpdateDisplay();
                     break;

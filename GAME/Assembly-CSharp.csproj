@@ -58,8 +58,9 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\BuildMenu.cs" />
     <Compile Include="Assets\Scripts\BuildSystem.cs" />
-    <Compile Include="Assets\Scripts\ClickSystem.cs" />
     <Compile Include="Assets\Scripts\ResearchSystem.cs" />
+    <Compile Include="Assets\Scripts\ClickSystem.cs" />
+    <Compile Include="Assets\Scripts\MilestoneSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
