@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 namespace Assets.Scripts
 {
@@ -14,12 +15,15 @@ namespace Assets.Scripts
         [SerializeField] private TextMeshProUGUI multiclickText;
         [SerializeField] private TextMeshProUGUI largeIncreaseText;
         [SerializeField] private TextMeshProUGUI milestoneText;
+        [SerializeField] private TextMeshProUGUI smallFactoryAmountText;
+        [SerializeField] private TextMeshProUGUI mediumFactoryAmountText;
+        [SerializeField] private TextMeshProUGUI largeFactoryAmountText;
         [SerializeField] private Canvas MainCanvas;
         [SerializeField] private Canvas BuildCanvas;
         [SerializeField] private Canvas ResearchCanvas;
         [SerializeField] private Canvas MilestoneCanvas;
 
-        public int playerMoney = 0; // Money the player has
+        public int playerMoney = 0; // Money the player has a
         private int activeCanvas = 1;
 
         [SerializeField] public BuildSystem _buildSystem;
@@ -38,6 +42,7 @@ namespace Assets.Scripts
         {
             playerMoney += 1 * _researchSystem.multiclickEffect;
             _milestoneSystem.AddClick(1 * _researchSystem.multiclickEffect);
+            _milestoneSystem.CheckMilestones(_milestoneSystem.currentMilestone);
             UpdateDisplay();
         }
 
@@ -75,23 +80,27 @@ namespace Assets.Scripts
         {
             displayText.text = "Money: " + playerMoney.ToString();
             milestoneText.text = "Amount: " + _milestoneSystem.clickAmount;
+            smallFactoryAmountText.text = "Small: " + _buildSystem.factorySmallCount;
+            mediumFactoryAmountText.text = "Medium: " + _buildSystem.factoryMediumCount;
+            largeFactoryAmountText.text = "Large: " + _buildSystem.factoryLargeCount;
+            _milestoneSystem.milestoneText.text = "Current Objective:" + Environment.NewLine + _milestoneSystem.clickAmount + "/" + _milestoneSystem.milestones[_milestoneSystem.currentMilestone];
         }
 
         public void UpdateEffectDisplay()
         {
             if (_researchSystem.hasSmallMultiplier == true)
             {
-                smallMultiplierText.text = "Small Factories 2X!";
+                smallMultiplierText.text = "2X";
             }
 
             if (_researchSystem.hasMulticlickEffect == true)
             {
-                multiclickText.text = "2X Pets!";
+                multiclickText.text = "2X";
             }
 
             if (_researchSystem.hasLargeIncreaseEffect == true)
             {
-                largeIncreaseText.text = "Large Factories more Effective!";
+                largeIncreaseText.text = "+";
             }
         }
 
