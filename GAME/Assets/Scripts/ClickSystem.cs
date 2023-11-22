@@ -11,8 +11,9 @@ namespace Assets.Scripts
     public class ClickSystem : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI displayText;
+        [SerializeField] private TextMeshProUGUI researchPointText;
         [SerializeField] private TextMeshProUGUI smallMultiplierText;
-        [SerializeField] private TextMeshProUGUI multiclickText;
+        [SerializeField] private TextMeshProUGUI doubleUpText;
         [SerializeField] private TextMeshProUGUI largeIncreaseText;
         [SerializeField] private TextMeshProUGUI milestoneText;
         [SerializeField] private TextMeshProUGUI smallFactoryAmountText;
@@ -23,8 +24,14 @@ namespace Assets.Scripts
         [SerializeField] private Canvas ResearchCanvas;
         [SerializeField] private Canvas MilestoneCanvas;
 
-        public int playerMoney = 0; // Money the player has a
+        public int playerMoney = 0;
+        public int researchPoints = 0;
+        public int clickMultiplier = 1;
+        public int critChance = 5;
+        public int researchPointTarget = 10;
+        public int currentRPT = 0;
         private int activeCanvas = 1;
+        System.Random rand = new System.Random();
 
         [SerializeField] public BuildSystem _buildSystem;
         [SerializeField] public ResearchSystem _researchSystem;
@@ -40,8 +47,12 @@ namespace Assets.Scripts
         /// </summary>
         public void IncreaseMoney()
         {
-            playerMoney += 1 * _researchSystem.multiclickEffect;
-            _milestoneSystem.AddClick(1 * _researchSystem.multiclickEffect);
+            playerMoney += 1 * clickMultiplier;
+            int i = rand.Next(0, 100); 
+            if (i <= critChance) { playerMoney += _buildSystem.critPayout; }
+            currentRPT++;
+            if (currentRPT >= researchPointTarget) { researchPoints++; currentRPT = 0; }
+            _milestoneSystem.AddClick(1 * clickMultiplier);
             _milestoneSystem.CheckMilestones(_milestoneSystem.currentMilestone);
             UpdateDisplay();
         }
@@ -51,27 +62,45 @@ namespace Assets.Scripts
         {
             int _pmoney = playerMoney;
 
-            if (_buildSystem.hasSmallFactory)
-            {
-                playerMoney += _buildSystem.factorySmallCount * _buildSystem.factorySmallRate;
-                Debug.Log("Small factories make stuff, the player has: " + _buildSystem.factorySmallCount + " factories!");
-            }
             
-            if (_buildSystem.hasMediumFactory)
-            {
-                playerMoney += _buildSystem.factoryMediumCount * _buildSystem.factoryMediumRate;
-                Debug.Log("Medium factories make stuff, the player has: " + _buildSystem.factoryMediumCount + " factories!");
-            }
+            
+            // if (_buildSystem.hasMediumFactory)
+            // {
+            //     playerMoney += _buildSystem.factoryMediumCount * _buildSystem.factoryMediumRate;
+            //     Debug.Log("Medium factories make stuff, the player has: " + _buildSystem.factoryMediumCount + " factories!");
+            // }
             
             if (_buildSystem.hasLargeFactory)
             {
                 playerMoney += _buildSystem.factoryLargeCount * _buildSystem.factoryLargeRate;
+                researchPoints += _buildSystem.factoryLargeCount * _buildSystem.factoryLargeRate;
                 Debug.Log("Large factories make stuff, the player has: " + _buildSystem.factoryLargeCount + " factories!");
             }
 
             _milestoneSystem.AddClick(playerMoney - _pmoney);
             UpdateDisplay();
         }
+
+        public void AddSmallFactoryPoints() 
+        {
+            int _pmoney = playerMoney;
+
+            if (_buildSystem.hasSmallFactory)
+            {
+                playerMoney += _buildSystem.factorySmallCount * _buildSystem.factorySmallRate;
+                Debug.Log("Small factories make stuff, the player has: " + _buildSystem.factorySmallCount + " factories!");
+            }
+
+            if (_buildSystem.hasResearchStation)
+            {
+                researchPoints += _buildSystem.researchStationCount;
+                Debug.Log("Research stations make stuff, the player has: " + _buildSystem.factorySmallCount + " stations!");
+            }
+
+            _milestoneSystem.AddClick(playerMoney - _pmoney);
+            UpdateDisplay();
+        }
+
     
         /// <summary>
         /// Updates the displayText component with the player's current money.
@@ -79,26 +108,27 @@ namespace Assets.Scripts
         private void UpdateDisplay()
         {
             displayText.text = "Money: " + playerMoney.ToString();
+            researchPointText.text = "Research points: " + researchPoints.ToString();
             milestoneText.text = "Amount: " + _milestoneSystem.clickAmount;
             smallFactoryAmountText.text = "Small: " + _buildSystem.factorySmallCount;
-            mediumFactoryAmountText.text = "Medium: " + _buildSystem.factoryMediumCount;
+            // mediumFactoryAmountText.text = "Medium: " + _buildSystem.factoryMediumCount;
             largeFactoryAmountText.text = "Large: " + _buildSystem.factoryLargeCount;
             _milestoneSystem.milestoneText.text = "Current Objective:" + Environment.NewLine + _milestoneSystem.clickAmount + "/" + _milestoneSystem.milestones[_milestoneSystem.currentMilestone];
         }
 
         public void UpdateEffectDisplay()
         {
-            if (_researchSystem.hasSmallMultiplier == true)
+            if (_researchSystem.researchedSmallMultiplier == true)
             {
                 smallMultiplierText.text = "2X";
             }
 
-            if (_researchSystem.hasMulticlickEffect == true)
+            if (_buildSystem.hasDoubleUp == true)
             {
-                multiclickText.text = "2X";
+                doubleUpText.text = clickMultiplier + "X";
             }
 
-            if (_researchSystem.hasLargeIncreaseEffect == true)
+            if (_researchSystem.researchedLargeFactoryBoost == true)
             {
                 largeIncreaseText.text = "+";
             }
@@ -107,11 +137,13 @@ namespace Assets.Scripts
         private void OnEnable()
         {
             InvokeRepeating(nameof(AddFactoryMoney), 10f, 10f);
+            InvokeRepeating(nameof(AddSmallFactoryPoints), 1f, 1f);
         }
     
         private void OnDisable()
         {
             CancelInvoke(nameof(AddFactoryMoney));
+            CancelInvoke(nameof(AddSmallFactoryPoints));
         }
     
     
