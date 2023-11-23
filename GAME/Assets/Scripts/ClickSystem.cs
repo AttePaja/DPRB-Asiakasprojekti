@@ -19,6 +19,9 @@ namespace Assets.Scripts
         [SerializeField] private TextMeshProUGUI smallFactoryAmountText;
         [SerializeField] private TextMeshProUGUI mediumFactoryAmountText;
         [SerializeField] private TextMeshProUGUI largeFactoryAmountText;
+        [SerializeField] private TextMeshProUGUI critChanceText;
+        [SerializeField] private TextMeshProUGUI researchStationsText;
+        [SerializeField] private TextMeshProUGUI researchPointTargetText;
         [SerializeField] private Canvas MainCanvas;
         [SerializeField] private Canvas BuildCanvas;
         [SerializeField] private Canvas ResearchCanvas;
@@ -91,16 +94,18 @@ namespace Assets.Scripts
                 Debug.Log("Small factories make stuff, the player has: " + _buildSystem.factorySmallCount + " factories!");
             }
 
+            _milestoneSystem.AddClick(playerMoney - _pmoney);
+            UpdateDisplay();
+        }
+
+        public void AddResearchStationPoints()
+        {
             if (_buildSystem.hasResearchStation)
             {
                 researchPoints += _buildSystem.researchStationCount;
                 Debug.Log("Research stations make stuff, the player has: " + _buildSystem.factorySmallCount + " stations!");
             }
-
-            _milestoneSystem.AddClick(playerMoney - _pmoney);
-            UpdateDisplay();
         }
-
     
         /// <summary>
         /// Updates the displayText component with the player's current money.
@@ -109,7 +114,9 @@ namespace Assets.Scripts
         {
             displayText.text = "Money: " + playerMoney.ToString();
             researchPointText.text = "Research points: " + researchPoints.ToString();
-            milestoneText.text = "Amount: " + _milestoneSystem.clickAmount;
+            researchStationsText.text = "Research: " + _buildSystem.researchStationCount.ToString();
+            researchPointTargetText.text = "RPT: " + researchPointTarget.ToString();
+            milestoneText.text = "Total clicks: " + _milestoneSystem.clickAmount;
             smallFactoryAmountText.text = "Small: " + _buildSystem.factorySmallCount;
             // mediumFactoryAmountText.text = "Medium: " + _buildSystem.factoryMediumCount;
             largeFactoryAmountText.text = "Large: " + _buildSystem.factoryLargeCount;
@@ -130,7 +137,17 @@ namespace Assets.Scripts
 
             if (_researchSystem.researchedLargeFactoryBoost == true)
             {
-                largeIncreaseText.text = "+";
+                largeIncreaseText.text = "2X";
+            }
+
+            if (_researchSystem.researchedCritChance == true && _researchSystem.researchedCritIncrease == false)
+            {
+                critChanceText.text = "Crit Chance: 5%";
+            }
+
+            if (_researchSystem.researchedCritIncrease == true)
+            {
+                critChanceText.text = "Crit Chance: 10%";
             }
         }
 
@@ -138,12 +155,14 @@ namespace Assets.Scripts
         {
             InvokeRepeating(nameof(AddFactoryMoney), 10f, 10f);
             InvokeRepeating(nameof(AddSmallFactoryPoints), 1f, 1f);
+            InvokeRepeating(nameof(AddResearchStationPoints), 5f, 5f);
         }
     
         private void OnDisable()
         {
             CancelInvoke(nameof(AddFactoryMoney));
             CancelInvoke(nameof(AddSmallFactoryPoints));
+            CancelInvoke(nameof(AddResearchStationPoints));
         }
     
     

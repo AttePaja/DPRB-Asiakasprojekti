@@ -77,6 +77,7 @@ namespace Assets.Scripts
                 researchedLargeFactory = true;
                 lockIMG_R_SM.enabled = false;
                 unlockIMG_R_LF.enabled = true;
+                _buildSystem.largeLock.SetActive(false);
             }
         }
 
@@ -115,6 +116,7 @@ namespace Assets.Scripts
                 researchedRPpoint = true;
                 lockIMG_R_RPP.enabled = false;
                 unlockIMG_R_RP.enabled = true;
+                _buildSystem.rptLock.SetActive(false);
                 if (nextStepImageReady) { lockIMG_R_NS.enabled = false; } else nextStepImageReady = true;
             }
         }
@@ -139,6 +141,7 @@ namespace Assets.Scripts
                 lockIMG_R_CI.enabled = false;
                 lockIMG_R_DU.enabled = false;
                 unlockIMG_R_CC.enabled = true; 
+                _buildSystem.critLock.SetActive(false);
                 _clickSystem.UpdateEffectDisplay();
             }
         }
@@ -162,6 +165,7 @@ namespace Assets.Scripts
                 _clickSystem.researchPoints -= doubleUpCOST;
                 researchedDoubleUp = true;
                 unlockIMG_R_DU.enabled = true;
+                _buildSystem.doubleLock.SetActive(false);
                 if (nextStepImageReady) { lockIMG_R_NS.enabled = false; } else nextStepImageReady = true;
                 _clickSystem.UpdateEffectDisplay();
                 /// ADD CODE TO CHANGE IMAGE WHEN BOUGHT
@@ -175,6 +179,7 @@ namespace Assets.Scripts
                 _clickSystem.researchPoints -= nextStepCOST;
                 researchedNextStep = true;
                 unlockIMG_R_NS.enabled = true;
+                _buildSystem.nextStepLock.SetActive(false);
                 _clickSystem.UpdateEffectDisplay();
             }
         }

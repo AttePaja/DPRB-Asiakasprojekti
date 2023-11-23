@@ -55,13 +55,36 @@ namespace Assets.Scripts
         public TextMeshProUGUI RPTdecreaseText;
         public TextMeshProUGUI nextStepText;
 
-        
+        public TextMeshProUGUI smallCostText;
+        public TextMeshProUGUI researchStationCostText;
+        public TextMeshProUGUI largeCostText;
+        public TextMeshProUGUI critUpCostText;
+        public TextMeshProUGUI doubleUpCostText;
+        public TextMeshProUGUI RPTdecreaseCostText;
+        public TextMeshProUGUI NextStepCostText;
+
+        public GameObject largeLock;
+        public GameObject critLock;
+        public GameObject rptLock;
+        public GameObject doubleLock;
+        public GameObject nextStepLock;
 
         public ClickSystem _clickSystem;
         public ResearchSystem _researchSystem;
+        public FactoryInfoSystem _factoryInfoSystem;
         // public BuildMenu buildMenu;
         // public GameObject buildUI;
-        
+
+        public void Awake()
+        {
+            smallCostText.text = "" + factorySmallCost;
+            researchStationCostText.text = "" + factoryResearchStationCost;
+            largeCostText.text = "" + factoryLargeCost;
+            critUpCostText.text = "" + factoryCritPayoutCost;
+            doubleUpCostText.text = "" + factoryDoubleUpCost;
+            RPTdecreaseCostText.text = "" + factoryRPTdecreaseCost;
+            NextStepCostText.text = "" + factoryNextStepCost;
+        }
 
         public void BuyFactorySmall()
         {
@@ -69,6 +92,7 @@ namespace Assets.Scripts
             {
                 _clickSystem.playerMoney -= factorySmallCost;
                 factorySmallCount++;
+                _factoryInfoSystem.ShowBuyInfoPanel(0);
                 hasSmallFactory = true;
                 UpdateFactoryDisplays();
             }
@@ -80,6 +104,7 @@ namespace Assets.Scripts
             {
                 _clickSystem.playerMoney -= factoryResearchStationCost;
                 researchStationCount++;
+                _factoryInfoSystem.ShowBuyInfoPanel(1);
                 hasResearchStation = true;
                 UpdateFactoryDisplays();
             }
@@ -102,6 +127,7 @@ namespace Assets.Scripts
             {
                 _clickSystem.playerMoney -= factoryLargeCost;
                 factoryLargeCount++;
+                _factoryInfoSystem.ShowBuyInfoPanel(2);
                 hasLargeFactory = true;
                 UpdateFactoryDisplays();
             }
@@ -114,6 +140,7 @@ namespace Assets.Scripts
                 _clickSystem.playerMoney -= factoryDoubleUpCost;
                 _clickSystem.clickMultiplier = _clickSystem.clickMultiplier * 2;
                 hasDoubleUp = true;
+                _factoryInfoSystem.ShowBuyInfoPanel(5);
                 UpdateFactoryDisplays();
             }
         }
@@ -124,6 +151,7 @@ namespace Assets.Scripts
             {
                 _clickSystem.playerMoney -= factoryCritPayoutCost;
                 critPayout += 100;
+                _factoryInfoSystem.ShowBuyInfoPanel(3);
                 UpdateFactoryDisplays();
             }
         }
@@ -134,6 +162,7 @@ namespace Assets.Scripts
             {
                 _clickSystem.playerMoney -= factoryNextStepCost;
                 hasNextStep = true;
+                _factoryInfoSystem.ShowBuyInfoPanel(6);
                 UpdateFactoryDisplays();
             }
         }
@@ -146,6 +175,7 @@ namespace Assets.Scripts
                 _clickSystem.playerMoney -= factoryRPTdecreaseCost;
                 _clickSystem.researchPointTarget--;
                 ownedRPT++;
+                _factoryInfoSystem.ShowBuyInfoPanel(4);
                 UpdateFactoryDisplays();
             }
         }
