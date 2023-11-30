@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,6 +24,8 @@ namespace Assets.Scripts
         public int critIncreaseCOST = 300;
         public int doubleUpCOST = 500;
         public int nextStepCOST = 1000;
+
+        
 
         public bool researchedLargeFactory = false;
         public bool researchedSmallMultiplier = false;
@@ -57,6 +60,11 @@ namespace Assets.Scripts
 
         public ClickSystem _clickSystem;
         public BuildSystem _buildSystem;
+        public FactoryInfoSystem _factoryInfoSystem;
+        public ResearchInfoSystem _researchInfoSystem;
+
+        public TextMeshProUGUI[] researchPriceTexts = new TextMeshProUGUI[9];
+        public TextMeshProUGUI resText;
 
         // public int mediumSaleEffect = 5;
         // public int largeIncreaseEffect = 10;
@@ -69,6 +77,24 @@ namespace Assets.Scripts
         // public bool researchedLargeIncrease = false;
         // 
 
+        private void Awake()
+        {
+            researchPriceTexts[0].text = largeFactoryResearchCOST.ToString();
+            researchPriceTexts[1].text = smallMultiplierEffectCOST.ToString();
+            researchPriceTexts[2].text = largeFactoryBoostCOST.ToString();
+            researchPriceTexts[3].text = RPpointCOST.ToString();
+            researchPriceTexts[4].text = RPpointPlusCOST.ToString();
+            researchPriceTexts[5].text = critChanceCOST.ToString();
+            researchPriceTexts[6].text = critIncreaseCOST.ToString();
+            researchPriceTexts[7].text = doubleUpCOST.ToString();
+            researchPriceTexts[8].text = nextStepCOST.ToString();
+        }
+
+        private void Update()
+        {
+            resText.text = "RP: " + _clickSystem.researchPoints;
+        }
+
         public void ResearchLargeFactory()
         {
             if (_clickSystem.researchPoints >= largeFactoryResearchCOST && researchedLargeFactory == false)
@@ -77,7 +103,10 @@ namespace Assets.Scripts
                 researchedLargeFactory = true;
                 lockIMG_R_SM.enabled = false;
                 unlockIMG_R_LF.enabled = true;
+                GameObject.FindGameObjectWithTag("SoundBoard").GetComponent<SoundBoard>().PlayAudioClip(2);
                 _buildSystem.largeLock.SetActive(false);
+                _factoryInfoSystem.isUnlocked[2] = true;
+                _researchInfoSystem.isUnlocked[1] = true;
             }
         }
 
@@ -91,7 +120,10 @@ namespace Assets.Scripts
                 lockIMG_R_LFB.enabled = false;
                 lockIMG_R_CC.enabled = false;
                 unlockIMG_R_SM.enabled = true;
+                GameObject.FindGameObjectWithTag("SoundBoard").GetComponent<SoundBoard>().PlayAudioClip(2);
                 _clickSystem.UpdateEffectDisplay();
+                _researchInfoSystem.isUnlocked[2] = true;
+                _researchInfoSystem.isUnlocked[5] = true;
             }
         }
 
@@ -104,7 +136,9 @@ namespace Assets.Scripts
                 _buildSystem.factoryLargeRate = _buildSystem.factoryLargeRate * largeMultiplierEffect;
                 lockIMG_R_RP.enabled = false;
                 unlockIMG_R_LFB.enabled = true;
+                GameObject.FindGameObjectWithTag("SoundBoard").GetComponent<SoundBoard>().PlayAudioClip(2);
                 _clickSystem.UpdateEffectDisplay();
+                _researchInfoSystem.isUnlocked[3] = true;
             }
         }
 
@@ -116,8 +150,11 @@ namespace Assets.Scripts
                 researchedRPpoint = true;
                 lockIMG_R_RPP.enabled = false;
                 unlockIMG_R_RP.enabled = true;
+                GameObject.FindGameObjectWithTag("SoundBoard").GetComponent<SoundBoard>().PlayAudioClip(2);
                 _buildSystem.rptLock.SetActive(false);
-                if (nextStepImageReady) { lockIMG_R_NS.enabled = false; } else nextStepImageReady = true;
+                _factoryInfoSystem.isUnlocked[4] = true;
+                _researchInfoSystem.isUnlocked[4] = true;
+                if (nextStepImageReady) { lockIMG_R_NS.enabled = false; _researchInfoSystem.isUnlocked[8] = true; } else nextStepImageReady = true;
             }
         }
 
@@ -129,6 +166,7 @@ namespace Assets.Scripts
                 researchedRPpointPlus = true;
                 unlockIMG_R_RPP.enabled = true;
                 _buildSystem.maxRPTownedAmount = 10;
+                GameObject.FindGameObjectWithTag("SoundBoard").GetComponent<SoundBoard>().PlayAudioClip(2);
             }
         }
 
@@ -137,12 +175,17 @@ namespace Assets.Scripts
             if (_clickSystem.researchPoints >= critChanceCOST && researchedCritChance == false && researchedSmallMultiplier == true)
             {
                 _clickSystem.researchPoints -= critChanceCOST;
+                _buildSystem.critPayout = 100;
                 researchedCritChance = true;
                 lockIMG_R_CI.enabled = false;
                 lockIMG_R_DU.enabled = false;
-                unlockIMG_R_CC.enabled = true; 
+                unlockIMG_R_CC.enabled = true;
+                GameObject.FindGameObjectWithTag("SoundBoard").GetComponent<SoundBoard>().PlayAudioClip(2);
                 _buildSystem.critLock.SetActive(false);
                 _clickSystem.UpdateEffectDisplay();
+                _factoryInfoSystem.isUnlocked[3] = true;
+                _researchInfoSystem.isUnlocked[6] = true;
+                _researchInfoSystem.isUnlocked[7] = true;
             }
         }
 
@@ -154,6 +197,7 @@ namespace Assets.Scripts
                 researchedCritIncrease = true;
                 _clickSystem.critChance = 10;
                 unlockIMG_R_CI.enabled = true;
+                GameObject.FindGameObjectWithTag("SoundBoard").GetComponent<SoundBoard>().PlayAudioClip(2);
                 _clickSystem.UpdateEffectDisplay();
             }
         }
@@ -165,8 +209,10 @@ namespace Assets.Scripts
                 _clickSystem.researchPoints -= doubleUpCOST;
                 researchedDoubleUp = true;
                 unlockIMG_R_DU.enabled = true;
+                GameObject.FindGameObjectWithTag("SoundBoard").GetComponent<SoundBoard>().PlayAudioClip(2);
                 _buildSystem.doubleLock.SetActive(false);
-                if (nextStepImageReady) { lockIMG_R_NS.enabled = false; } else nextStepImageReady = true;
+                _factoryInfoSystem.isUnlocked[5] = true;
+                if (nextStepImageReady) { lockIMG_R_NS.enabled = false; _researchInfoSystem.isUnlocked[8] = true; } else nextStepImageReady = true;
                 _clickSystem.UpdateEffectDisplay();
                 /// ADD CODE TO CHANGE IMAGE WHEN BOUGHT
             }
@@ -179,7 +225,9 @@ namespace Assets.Scripts
                 _clickSystem.researchPoints -= nextStepCOST;
                 researchedNextStep = true;
                 unlockIMG_R_NS.enabled = true;
+                GameObject.FindGameObjectWithTag("SoundBoard").GetComponent<SoundBoard>().PlayAudioClip(2);
                 _buildSystem.nextStepLock.SetActive(false);
+                _factoryInfoSystem.isUnlocked[6] = true;
                 _clickSystem.UpdateEffectDisplay();
             }
         }

@@ -36,9 +36,13 @@ namespace Assets.Scripts
         private int activeCanvas = 1;
         System.Random rand = new System.Random();
 
+        public int clickCounter = 0;
+
         [SerializeField] public BuildSystem _buildSystem;
         [SerializeField] public ResearchSystem _researchSystem;
         [SerializeField] public MilestoneSystem _milestoneSystem;
+
+        public GameObject theButton;
 
         private void Awake()
         {
@@ -50,6 +54,8 @@ namespace Assets.Scripts
         /// </summary>
         public void IncreaseMoney()
         {
+            theButton.GetComponent<AudioSource>().Play();
+            clickCounter++;
             playerMoney += 1 * clickMultiplier;
             int i = rand.Next(0, 100); 
             if (i <= critChance) { playerMoney += _buildSystem.critPayout; }
@@ -60,6 +66,10 @@ namespace Assets.Scripts
             UpdateDisplay();
         }
 
+        private void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.E)) { playerMoney = 10000; researchPoints = 10000; };
+        }
 
         public void AddFactoryMoney()
         {
@@ -77,7 +87,7 @@ namespace Assets.Scripts
             {
                 playerMoney += _buildSystem.factoryLargeCount * _buildSystem.factoryLargeRate;
                 researchPoints += _buildSystem.factoryLargeCount * _buildSystem.factoryLargeRate;
-                Debug.Log("Large factories make stuff, the player has: " + _buildSystem.factoryLargeCount + " factories!");
+                // Debug.Log("Large factories make stuff, the player has: " + _buildSystem.factoryLargeCount + " factories!");
             }
 
             _milestoneSystem.AddClick(playerMoney - _pmoney);
@@ -91,7 +101,7 @@ namespace Assets.Scripts
             if (_buildSystem.hasSmallFactory)
             {
                 playerMoney += _buildSystem.factorySmallCount * _buildSystem.factorySmallRate;
-                Debug.Log("Small factories make stuff, the player has: " + _buildSystem.factorySmallCount + " factories!");
+                // Debug.Log("Small factories make stuff, the player has: " + _buildSystem.factorySmallCount + " factories!");
             }
 
             _milestoneSystem.AddClick(playerMoney - _pmoney);
@@ -103,7 +113,7 @@ namespace Assets.Scripts
             if (_buildSystem.hasResearchStation)
             {
                 researchPoints += _buildSystem.researchStationCount;
-                Debug.Log("Research stations make stuff, the player has: " + _buildSystem.factorySmallCount + " stations!");
+                // Debug.Log("Research stations make stuff, the player has: " + _buildSystem.factorySmallCount + " stations!");
             }
         }
     
@@ -112,15 +122,16 @@ namespace Assets.Scripts
         /// </summary>
         private void UpdateDisplay()
         {
-            displayText.text = "Money: " + playerMoney.ToString();
+            displayText.text = "Clicks: " + playerMoney.ToString();
             researchPointText.text = "Research points: " + researchPoints.ToString();
             researchStationsText.text = "Research: " + _buildSystem.researchStationCount.ToString();
             researchPointTargetText.text = "RPT: " + researchPointTarget.ToString();
             milestoneText.text = "Total clicks: " + _milestoneSystem.clickAmount;
-            smallFactoryAmountText.text = "Small: " + _buildSystem.factorySmallCount;
+            smallFactoryAmountText.text = "AutoPress: " + _buildSystem.factorySmallCount;
             // mediumFactoryAmountText.text = "Medium: " + _buildSystem.factoryMediumCount;
-            largeFactoryAmountText.text = "Large: " + _buildSystem.factoryLargeCount;
+            largeFactoryAmountText.text = "BigBox: " + _buildSystem.factoryLargeCount;
             _milestoneSystem.milestoneText.text = "Current Objective:" + Environment.NewLine + _milestoneSystem.clickAmount + "/" + _milestoneSystem.milestones[_milestoneSystem.currentMilestone];
+            _milestoneSystem.milestoneCounterText.text = _milestoneSystem.currentMilestone + "/12";
         }
 
         public void UpdateEffectDisplay()

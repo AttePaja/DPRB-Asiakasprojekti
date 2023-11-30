@@ -64,7 +64,11 @@
     <Compile Include="Assets\Scripts\MilestoneSystem.cs" />
     <Compile Include="Assets\Scripts\ResearchSystem.cs" />
     <Compile Include="Assets\Scripts\MainMenu.cs" />
+    <Compile Include="Assets\Scripts\ResearchInfoSystem.cs" />
+    <Compile Include="Assets\Scripts\PauseMenuSystem.cs" />
+    <Compile Include="Assets\Scripts\SoundBoard.cs" />
     <Compile Include="Assets\Scripts\BuildSystem.cs" />
+    <Compile Include="Assets\Scripts\EndEventSystem.cs" />
     <Compile Include="Assets\Scripts\ClickSystem.cs" />
   </ItemGroup>
   <ItemGroup>

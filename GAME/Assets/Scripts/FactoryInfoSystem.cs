@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Net;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -44,9 +45,13 @@ namespace Assets.Scripts
         public TextMeshProUGUI infoStat;
         public TextMeshProUGUI infoFluff;
 
+        private int lastIndex = 99;
+
         public GameObject[] infoImages = new GameObject[7];
 
-        public Button[] infoButtons = new Button[7];
+        public GameObject[] infoButtons = new GameObject[7];
+
+        public bool[] isUnlocked = { true, true, false, false, false, false, false};
 
         public string[] infoTitles =
         {
@@ -55,7 +60,7 @@ namespace Assets.Scripts
             "BigBox",
             "Crit presser Upgrade",
             "Research effiency Upgrade",
-            "Autopresser Upgrade",
+            "Timeline shifter",
             "The Next Step"
         };
 
@@ -77,16 +82,27 @@ namespace Assets.Scripts
             "A big box with undisclosed amounts of researchcubes and autopressers inside of it. Does just sticking things inside a big box work? Apparently so.",
             "An enhanced, more unstable spring for the crit presser, allowing it to move back and forth at ridiculous rates.",
             "They say you are what you eat, so eating some of the research papers spewn out by the ResearchCubes should thus make you smarter, right?",
-            "Standard roll of utility tape for taping multiple autopressers together. Simple, and apparently, effective.",
+            "A mysterious machine that allows you to press the button across multiple timelines, literally multiplying your button pressing ambitions.",
             "A small box, not unlike the ResearchCubes, that hums with unknown power. You dont know what it is, but the BUTTON told you to make it. One word echoes in your head: ASCEND."
         };
 
         public void ShowBuyInfoPanel(int _buyindex)
         {
-            infoImage = infoImages[_buyindex];
-            infoTitle.text = infoTitles[_buyindex];
-            infoStat.text = infoStats[_buyindex];
-            infoFluff.text = infoFluffs[_buyindex];
+            if (isUnlocked[_buyindex] == true)
+            {
+                if (lastIndex == 99) 
+                { 
+                    lastIndex = _buyindex; 
+                }
+                else infoButtons[lastIndex].SetActive(false);
+
+                infoImage = infoImages[_buyindex];
+                infoTitle.text = infoTitles[_buyindex];
+                infoStat.text = infoStats[_buyindex];
+                infoFluff.text = infoFluffs[_buyindex];
+                infoButtons[_buyindex].SetActive(true);
+                lastIndex = _buyindex;
+            }
         }
     }
 }

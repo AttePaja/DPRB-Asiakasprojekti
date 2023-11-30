@@ -15,7 +15,7 @@ namespace Assets.Scripts
     public class BuildSystem : MonoBehaviour
     {
         public int factorySmallCost = 50;
-        public int factoryMediumCost = 20;
+        // public int factoryMediumCost = 20;
         public int factoryLargeCost = 200;
         public int factoryDoubleUpCost = 1000;
         public int factoryCritPayoutCost = 750;
@@ -24,12 +24,12 @@ namespace Assets.Scripts
         public int factoryRPTdecreaseCost = 1000;
 
         public int factorySmallRate = 1;
-        public int factoryMediumRate = 2;
+        // public int factoryMediumRate = 2;
         public int factoryLargeRate = 10;
         public int critPayout = 0;
 
         public int factorySmallCount = 0;
-        public int factoryMediumCount = 0;
+        // public int factoryMediumCount = 0;
         public int factoryLargeCount = 0;
         public int researchStationCount = 0;
         public int critUpCount = 0;
@@ -38,7 +38,7 @@ namespace Assets.Scripts
         public int nextStepCount = 0;
 
         public bool hasSmallFactory = false;
-        public bool hasMediumFactory = false;
+        // public bool hasMediumFactory = false;
         public bool hasLargeFactory = false;
         public bool hasResearchStation = false;
         public bool hasDoubleUp = false;
@@ -63,6 +63,8 @@ namespace Assets.Scripts
         public TextMeshProUGUI RPTdecreaseCostText;
         public TextMeshProUGUI NextStepCostText;
 
+        public TextMeshProUGUI clickAmount;
+
         public GameObject largeLock;
         public GameObject critLock;
         public GameObject rptLock;
@@ -72,6 +74,7 @@ namespace Assets.Scripts
         public ClickSystem _clickSystem;
         public ResearchSystem _researchSystem;
         public FactoryInfoSystem _factoryInfoSystem;
+        public EndEventSystem _endEventSystem;
         // public BuildMenu buildMenu;
         // public GameObject buildUI;
 
@@ -86,17 +89,29 @@ namespace Assets.Scripts
             NextStepCostText.text = "" + factoryNextStepCost;
         }
 
+        public void Update()
+        {
+            CheckClicksBuild();
+        }
+
+        public void CheckClicksBuild()
+        {
+            clickAmount.text = "Clicks " + _clickSystem.playerMoney;
+        }
+
         public void BuyFactorySmall()
         {
             if (_clickSystem.playerMoney >= factorySmallCost)
             {
                 _clickSystem.playerMoney -= factorySmallCost;
                 factorySmallCount++;
-                _factoryInfoSystem.ShowBuyInfoPanel(0);
+                
+                GameObject.FindGameObjectWithTag("SoundBoard").GetComponent<SoundBoard>().PlayAudioClip(3);
                 hasSmallFactory = true;
                 UpdateFactoryDisplays();
             }
         }
+
 
         public void BuyResearchStation()
         {
@@ -104,7 +119,7 @@ namespace Assets.Scripts
             {
                 _clickSystem.playerMoney -= factoryResearchStationCost;
                 researchStationCount++;
-                _factoryInfoSystem.ShowBuyInfoPanel(1);
+                GameObject.FindGameObjectWithTag("SoundBoard").GetComponent<SoundBoard>().PlayAudioClip(3);
                 hasResearchStation = true;
                 UpdateFactoryDisplays();
             }
@@ -127,7 +142,7 @@ namespace Assets.Scripts
             {
                 _clickSystem.playerMoney -= factoryLargeCost;
                 factoryLargeCount++;
-                _factoryInfoSystem.ShowBuyInfoPanel(2);
+                GameObject.FindGameObjectWithTag("SoundBoard").GetComponent<SoundBoard>().PlayAudioClip(3);
                 hasLargeFactory = true;
                 UpdateFactoryDisplays();
             }
@@ -140,18 +155,20 @@ namespace Assets.Scripts
                 _clickSystem.playerMoney -= factoryDoubleUpCost;
                 _clickSystem.clickMultiplier = _clickSystem.clickMultiplier * 2;
                 hasDoubleUp = true;
-                _factoryInfoSystem.ShowBuyInfoPanel(5);
+                doubleUpCount++;
+                GameObject.FindGameObjectWithTag("SoundBoard").GetComponent<SoundBoard>().PlayAudioClip(3);
                 UpdateFactoryDisplays();
             }
         }
 
         public void BuyCritPayout()
         {
-            if (_clickSystem.playerMoney >= factoryCritPayoutCost && _researchSystem.researchedCritIncrease == true)
+            if (_clickSystem.playerMoney >= factoryCritPayoutCost && _researchSystem.researchedCritChance == true)
             {
                 _clickSystem.playerMoney -= factoryCritPayoutCost;
                 critPayout += 100;
-                _factoryInfoSystem.ShowBuyInfoPanel(3);
+                critUpCount++;
+                GameObject.FindGameObjectWithTag("SoundBoard").GetComponent<SoundBoard>().PlayAudioClip(3);
                 UpdateFactoryDisplays();
             }
         }
@@ -162,20 +179,22 @@ namespace Assets.Scripts
             {
                 _clickSystem.playerMoney -= factoryNextStepCost;
                 hasNextStep = true;
-                _factoryInfoSystem.ShowBuyInfoPanel(6);
+                nextStepCount++;
+                GameObject.FindGameObjectWithTag("SoundBoard").GetComponent<SoundBoard>().PlayAudioClip(3);
                 UpdateFactoryDisplays();
+                _endEventSystem.StartEvent();
             }
         }
 
 
         public void BuyRPTdecrease()
         {
-            if (_clickSystem.playerMoney >= factoryRPTdecreaseCost && _clickSystem.researchPointTarget > 0 && _researchSystem.researchedRPpoint && maxRPTownedAmount <= ownedRPT)
+            if (_clickSystem.playerMoney >= factoryRPTdecreaseCost && _clickSystem.researchPointTarget > 0 && _researchSystem.researchedRPpoint == true && maxRPTownedAmount >= ownedRPT)
             {
                 _clickSystem.playerMoney -= factoryRPTdecreaseCost;
                 _clickSystem.researchPointTarget--;
-                ownedRPT++;
-                _factoryInfoSystem.ShowBuyInfoPanel(4);
+                RPTdecreaseCount++;
+                GameObject.FindGameObjectWithTag("SoundBoard").GetComponent<SoundBoard>().PlayAudioClip(3);
                 UpdateFactoryDisplays();
             }
         }
@@ -187,7 +206,7 @@ namespace Assets.Scripts
             //mediumText.text = "Owned: " + factoryMediumCount;
             largeText.text = "Owned: " + factoryLargeCount;
             critUpText.text = "Owned: " + critUpCount;
-            doubleUpText.text = "Owned: " + doubleUpCount;
+            doubleUpText.text = "Owned: " + doubleUpCount + "/5";
             RPTdecreaseText.text = "Owned: " + RPTdecreaseCount + "/10";
             nextStepText.text = "Owned: " + nextStepCount + "/1";
         }
@@ -201,4 +220,5 @@ namespace Assets.Scripts
         // }
     }
 
+    
 }

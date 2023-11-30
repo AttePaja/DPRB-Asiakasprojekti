@@ -51,6 +51,7 @@ namespace Assets.Scripts
         [SerializeField] public Image[] milestoneImages = new Image[10];
         // [SerializeField] public Image currentMilestoneImage;
         [SerializeField] public TextMeshProUGUI milestoneText;
+        public TextMeshProUGUI milestoneCounterText;
 
         public void AddClick(int _amount)
         {
@@ -66,8 +67,10 @@ namespace Assets.Scripts
                 milestoneImages[_milestone].color = Color.green;
                 // currentMilestoneImage = milestoneImages[_milestone];
                 Debug.Log("Milestone " + _milestone + " reached!");
-                currentMilestone++;
+                if (milestonesReached[9] == false) currentMilestone++;
             }
+            
+            if (milestonesReached[9] == true) { milestoneText.text = "Research and Build the Next Step"; };
         }
 
 
