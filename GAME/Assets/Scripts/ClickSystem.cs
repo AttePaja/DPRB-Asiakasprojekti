@@ -49,9 +49,7 @@ namespace Assets.Scripts
             UpdateDisplay();
         }
     
-        /// <summary>
-        /// Increases the player's money by a set amount.
-        /// </summary>
+        
         public void IncreaseMoney()
         {
             theButton.GetComponent<AudioSource>().Play();
@@ -66,10 +64,7 @@ namespace Assets.Scripts
             UpdateDisplay();
         }
 
-        private void Update()
-        {
-            if(Input.GetKeyDown(KeyCode.E)) { playerMoney = 10000; researchPoints = 10000; };
-        }
+       
 
         public void AddFactoryMoney()
         {
@@ -77,11 +72,7 @@ namespace Assets.Scripts
 
             
             
-            // if (_buildSystem.hasMediumFactory)
-            // {
-            //     playerMoney += _buildSystem.factoryMediumCount * _buildSystem.factoryMediumRate;
-            //     Debug.Log("Medium factories make stuff, the player has: " + _buildSystem.factoryMediumCount + " factories!");
-            // }
+           
             
             if (_buildSystem.hasLargeFactory)
             {
@@ -117,9 +108,7 @@ namespace Assets.Scripts
             }
         }
     
-        /// <summary>
-        /// Updates the displayText component with the player's current money.
-        /// </summary>
+        
         private void UpdateDisplay()
         {
             displayText.text = "Clicks: " + playerMoney.ToString();
@@ -131,7 +120,7 @@ namespace Assets.Scripts
             // mediumFactoryAmountText.text = "Medium: " + _buildSystem.factoryMediumCount;
             largeFactoryAmountText.text = "BigBox: " + _buildSystem.factoryLargeCount;
             _milestoneSystem.milestoneText.text = "Current Objective:" + Environment.NewLine + _milestoneSystem.clickAmount + "/" + _milestoneSystem.milestones[_milestoneSystem.currentMilestone];
-            _milestoneSystem.milestoneCounterText.text = _milestoneSystem.currentMilestone + "/12";
+            _milestoneSystem.milestoneCounterText.text = _milestoneSystem.currentMilestone + "/10";
         }
 
         public void UpdateEffectDisplay()
@@ -177,7 +166,7 @@ namespace Assets.Scripts
         }
     
     
-        // UPDATE TO A BETTER SOLUTION
+        
         public void ChangeCanvasFactory()
         {
             switch (activeCanvas)
@@ -197,7 +186,7 @@ namespace Assets.Scripts
             }
         }
 
-        // UPDATE TO A BETTER SOLUTION
+        
         public void ChangeCanvasResearch()
         {
             switch (activeCanvas)

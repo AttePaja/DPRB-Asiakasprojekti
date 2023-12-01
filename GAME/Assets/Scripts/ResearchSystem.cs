@@ -66,16 +66,7 @@ namespace Assets.Scripts
         public TextMeshProUGUI[] researchPriceTexts = new TextMeshProUGUI[9];
         public TextMeshProUGUI resText;
 
-        // public int mediumSaleEffect = 5;
-        // public int largeIncreaseEffect = 10;
-        // 
-        // public int mediumSaleEffectCOST = 10;
-        // public int largeIncreaseEffectCOST = 20;
-        // 
-        // 
-        // public bool researchedMediumSale = false;
-        // public bool researchedLargeIncrease = false;
-        // 
+        
 
         private void Awake()
         {
@@ -214,7 +205,7 @@ namespace Assets.Scripts
                 _factoryInfoSystem.isUnlocked[5] = true;
                 if (nextStepImageReady) { lockIMG_R_NS.enabled = false; _researchInfoSystem.isUnlocked[8] = true; } else nextStepImageReady = true;
                 _clickSystem.UpdateEffectDisplay();
-                /// ADD CODE TO CHANGE IMAGE WHEN BOUGHT
+                
             }
         }
 
@@ -235,27 +226,6 @@ namespace Assets.Scripts
 
 
 
-        // public void ResearchMediumSaleEffect()
-        // {
-        //     if (_clickSystem.researchPoints >= mediumSaleEffectCOST && researchedMediumSale == false)
-        //     {
-        //         _clickSystem.researchPoints -= mediumSaleEffectCOST;
-        //         researchedMediumSale = true;
-        //         _buildSystem.factoryMediumCost -= mediumSaleEffect;
-        //         /// ADD CODE TO CHANGE IMAGE WHEN BOUGHT
-        //     }
-        // }
-        // 
-        // public void ResearchLargeIncreaseEffect()
-        // {
-        //     if (_clickSystem.researchPoints >= largeIncreaseEffectCOST && researchedLargeIncrease == false)
-        //     {
-        //         _clickSystem.researchPoints -= largeIncreaseEffectCOST;
-        //         researchedLargeIncrease = true;
-        //         _buildSystem.factoryLargeRate += largeIncreaseEffect;
-        //         _clickSystem.UpdateEffectDisplay();
-        //         /// ADD CODE TO CHANGE IMAGE WHEN BOUGHT
-        //     }
-        // }
+        
     }
 }

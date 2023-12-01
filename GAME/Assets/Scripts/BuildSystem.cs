@@ -125,16 +125,7 @@ namespace Assets.Scripts
             }
         }
 
-        // public void BuyFactoryMedium()
-        // {
-        //     if (_clickSystem.playerMoney >= factoryMediumCost)
-        //     {
-        //         _clickSystem.playerMoney -= factoryMediumCost;
-        //         factoryMediumCount++;
-        //         hasMediumFactory = true;
-        //         UpdateFactoryDisplays();
-        //     }
-        // }
+        
 
         public void BuyFactoryLarge()
         {
@@ -211,13 +202,7 @@ namespace Assets.Scripts
             nextStepText.text = "Owned: " + nextStepCount + "/1";
         }
 
-        // public void OpenBuildMenu()
-        // {
-        //     Button _pressedButton = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
-        //     int _pressedButtonInteger = buildMenu.GetBuildAreaGridIndex(_pressedButton);
-        //     Debug.Log("Button index is: " + _pressedButtonInteger);
-        //     buildUI.gameObject.SetActive(true);
-        // }
+        
     }
 
     
